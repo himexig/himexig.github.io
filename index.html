@@ -9,468 +9,95 @@
 <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
-
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts (Noto Sans JP) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* =========================================
-       ベーススタイル・リセット
-       ========================================= */
-    :root {
-      --bg-color: #f8fafc;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --text-light: #94a3b8;
-      --border-color: #e2e8f0;
-      --border-focus: #818cf8;
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --secondary: #14b8a6;
-      --danger: #dc2626;
-      --danger-hover: #b91c1c;
-      --danger-bg: #fef2f2;
-      --success: #16a34a;
-      --card-bg: #ffffff;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      line-height: 1.5;
-      padding-bottom: 80px; /* スマホ下部余白 */
+      font-family: 'Noto Sans JP', sans-serif;
     }
-
-    button { font-family: inherit; }
-    textarea { font-family: inherit; }
-
-    /* =========================================
-       レイアウト
-       ========================================= */
-    .container {
-      max-width: 1152px;
-      margin: 0 auto;
-      padding: 0 16px;
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
     }
-
-    .header {
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(30, 41, 59, 0.5);
     }
-    .header-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 0;
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 3px;
     }
-    .header-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 20px;
-      font-weight: bold;
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.5);
     }
-
-    .main-content { padding: 24px 0; }
-    .layout-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
+    .modal-active {
+      opacity: 1;
+      visibility: visible;
     }
-    .col-left { width: 100%; }
-    .col-right { width: 100%; }
-
-    @media (min-width: 1024px) {
-      body { padding-bottom: 0; }
-      .layout-grid { flex-direction: row; }
-      .col-left { width: 58.333%; }
-      .col-right { width: 41.666%; }
-      .desktop-only { display: flex !important; }
-      .mobile-only { display: none !important; }
-    }
-    @media (min-width: 1280px) {
-      .col-left { width: 66.666%; }
-      .col-right { width: 33.333%; }
-    }
-
-    .desktop-only { display: none; }
-    .mobile-only { display: flex; }
-
-    /* =========================================
-       コンポーネント
-       ========================================= */
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      border: 1px solid var(--border-color);
-      margin-bottom: 24px;
-    }
-    .card-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .marker { width: 6px; height: 20px; border-radius: 4px; }
-    .marker.blue { background: var(--primary); }
-    .marker.teal { background: var(--secondary); }
-
-    /* 入力フォーム */
-    .input-name {
-      width: 100%;
-      font-size: 28px;
-      font-weight: bold;
-      border: none;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 8px;
-      outline: none;
-      background: transparent;
-      transition: border-color 0.2s;
-    }
-    .input-name:focus { border-color: var(--primary); }
-    .input-name::placeholder { color: #cbd5e1; }
-
-    .list-item { display: flex; align-items: flex-start; margin-bottom: 12px; }
-    .list-bullet { margin-top: 8px; margin-right: 8px; color: var(--text-light); user-select: none; }
-    .list-quote { margin-top: 8px; font-weight: bold; color: var(--text-light); user-select: none; }
-    
-    .textarea-base {
-      flex: 1;
-      width: 100%;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 14px;
-      outline: none;
-      resize: vertical;
-      background: var(--bg-color);
-      transition: 0.2s;
-    }
-    .textarea-base:focus {
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2);
-    }
-    .textarea-base.teal:focus {
-      border-color: #2dd4bf;
-      box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
-    }
-    .min-h-60 { min-height: 60px; }
-    .min-h-80 { min-height: 80px; }
-
-    /* ボタン類 */
-    .btn-delete {
-      margin-top: 4px;
-      margin-left: 8px;
-      padding: 8px;
-      background: transparent;
-      border: none;
-      color: var(--text-light);
-      cursor: pointer;
-      border-radius: 6px;
-      transition: 0.2s;
-      display: flex;
-    }
-    .btn-delete:hover { color: var(--danger); background: var(--danger-bg); }
-
-    .btn-add {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      width: 100%;
-      padding: 8px;
-      border: 2px dashed #cbd5e1;
-      border-radius: 8px;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 16px;
-    }
-    .btn-add:hover { color: var(--primary); border-color: var(--border-focus); background: #eef2ff; }
-    .btn-add.teal:hover { color: #0d9488; border-color: #5eead4; background: #f0fdfa; }
-
-    .btn-primary {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--primary);
-      color: #fff;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-primary:active { transform: scale(0.95); }
-    .btn-primary.success { background: var(--success); }
-
-    .btn-clear {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      color: var(--text-muted);
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .btn-clear:hover { color: var(--danger); background: var(--danger-bg); }
-
-    .mobile-clear-btn {
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      padding: 12px;
-      border: 2px solid var(--border-color);
-      border-radius: 12px;
-      background: #fff;
-      color: var(--text-light);
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .mobile-clear-btn:hover { color: var(--danger); border-color: #fca5a5; }
-    .mobile-clear-btn:active { transform: scale(0.95); }
-
-    .fab {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--primary);
-      color: #fff;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
-      border: none;
-      cursor: pointer;
-      z-index: 50;
-      transition: 0.2s;
-    }
-    .fab:active { transform: scale(0.95); }
-    .fab.success { background: var(--success); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4); }
-
-    /* 自分用メモのグリッド */
-    .memo-section { margin-bottom: 24px; }
-    .memo-label { display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 8px; }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      background: var(--bg-color);
-      padding: 16px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-    @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
-    .input-sm-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 4px; }
-    .input-sm {
-      width: 100%;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 8px;
-      font-size: 14px;
-      outline: none;
-      transition: 0.2s;
-    }
-    .input-sm:focus { border-color: #2dd4bf; box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2); }
-
-    /* プレビュー画面 */
-    .preview-container {
-      background: #1e293b;
-      color: #f1f5f9;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      max-height: calc(100vh - 120px);
-      position: sticky;
-      top: 96px;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-    }
-    .preview-header {
-      background: #0f172a;
-      padding: 16px 20px;
-      border-bottom: 1px solid #334155;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .preview-title {
-      font-size: 12px;
-      font-weight: bold;
-      color: #cbd5e1;
-      letter-spacing: 0.05em;
-    }
-    .preview-dots { display: flex; gap: 6px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-red { background: #ef4444; }
-    .dot-yellow { background: #eab308; }
-    .dot-green { background: #22c55e; }
-    .preview-content {
-      padding: 20px;
-      overflow-y: auto;
-      flex: 1;
-      min-height: 250px;
-      background: rgba(15, 23, 42, 0.4);
-    }
-    .preview-text {
-      white-space: pre-wrap;
-      font-family: monospace;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #e2e8f0;
-      display: none;
-    }
-    .preview-empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: var(--text-muted);
-      text-align: center;
-      gap: 12px;
-      opacity: 0.6;
-      padding: 48px 0;
-    }
-
-    /* カスタムスクロールバー */
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(30, 41, 59, 0.5); }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 3px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); }
-
-    /* モーダル＆トースト */
-    .toast {
-      position: fixed;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      background: var(--danger);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.3s;
-      z-index: 200;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
+    .modal-hidden {
       opacity: 0;
       visibility: hidden;
-      transition: 0.2s;
-      padding: 16px;
     }
-    .modal-overlay.show { opacity: 1; visibility: visible; }
-    .modal-box {
-      background: #fff;
-      width: 100%;
-      max-width: 384px;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-      transform: scale(0.95);
-      transition: 0.2s;
-    }
-    .modal-overlay.show .modal-box { transform: scale(1); }
-    .modal-header { display: flex; align-items: center; gap: 12px; color: var(--danger); margin-bottom: 16px; }
-    .modal-icon-bg { background: var(--danger-bg); padding: 8px; border-radius: 50%; display: flex; }
-    .modal-title { font-size: 18px; font-weight: bold; color: var(--text-main); }
-    .modal-body { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 32px; }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 12px; }
-    .btn-cancel { padding: 10px 20px; background: #f1f5f9; color: var(--text-muted); border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .btn-cancel:hover { background: #e2e8f0; }
-    .btn-confirm { padding: 10px 20px; background: var(--danger); color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.2); transition: 0.2s; }
-    .btn-confirm:hover { background: var(--danger-hover); }
-    .btn-confirm:active { transform: scale(0.95); }
-
-    .flex { display: flex; }
-    .items-center { align-items: center; }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-32 lg:pb-0">
 
-  <!-- エラー通知用トーストメッセージ -->
-  <div id="toast" class="toast">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-    <span id="toast-message">コピーするテキストがありません。</span>
+  <!-- 汎用トースト通知 -->
+  <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-[200] transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none flex items-center gap-2 bg-slate-800 text-white px-5 py-3 rounded-xl shadow-xl text-sm font-medium whitespace-nowrap">
+    <i id="toast-icon" data-lucide="info" class="w-5 h-5"></i>
+    <span id="toast-message">メッセージ</span>
   </div>
 
   <!-- 一括クリア確認モーダル -->
-  <div id="confirm-modal" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-icon-bg">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+  <div id="confirm-modal" class="modal-hidden fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center px-4 transition-all duration-200">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 transform scale-95 transition-transform duration-200" id="confirm-modal-box">
+      <div class="flex items-center gap-3 text-red-600 mb-4">
+        <div class="p-2 bg-red-50 rounded-full">
+          <i data-lucide="alert-triangle" class="w-6 h-6"></i>
         </div>
-        <h3 class="modal-title">すべての入力をクリア</h3>
+        <h3 class="text-lg font-bold text-slate-800">すべての入力をクリア</h3>
       </div>
-      <p class="modal-body">入力した内容をすべて消去します。<br>この操作は取り消せません。本当によろしいですか？</p>
-      <div class="modal-footer">
-        <button id="btn-modal-cancel" class="btn-cancel">キャンセル</button>
-        <button id="btn-modal-confirm" class="btn-confirm">クリアする</button>
+      <p class="text-slate-600 mb-8 text-sm leading-relaxed">入力した内容と保存データをすべて消去します。<br>この操作は取り消せません。本当によろしいですか？</p>
+      <div class="flex justify-end gap-3">
+        <button onclick="hideClearModal()" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors active:scale-95">キャンセル</button>
+        <button onclick="executeClearAll()" class="px-5 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors active:scale-95 shadow-md shadow-red-600/20">クリアする</button>
       </div>
     </div>
   </div>
 
   <!-- ヘッダー -->
-  <header class="header">
-    <div class="container header-inner">
-      <h1 class="header-title">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M7 21v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg>
-        <span>キャラクター紹介シート作成</span>
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+        <i data-lucide="user-square-2" class="text-indigo-600"></i>
+        <span class="hidden sm:inline">キャラクター紹介シート作成</span>
+        <span class="sm:hidden">紹介シート作成</span>
       </h1>
-      <div class="desktop-only" style="align-items: center; gap: 12px;">
-        <button id="btn-clear-header" class="btn-clear">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- 保存状態インジケーター -->
+        <div id="save-indicator" class="hidden text-xs text-slate-400 items-center gap-1 mr-2">
+          <i data-lucide="check" class="w-3 h-3 text-green-500"></i>
+          <span class="hidden sm:inline">自動保存済み</span>
+        </div>
+        <!-- 一括クリア（PC） -->
+        <button 
+          onclick="showClearModal()"
+          class="hidden lg:flex items-center gap-1.5 text-slate-500 hover:text-red-600 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors font-medium text-sm"
+        >
+          <i data-lucide="trash" class="w-4 h-4"></i>
           <span>一括クリア</span>
         </button>
-        <button id="btn-copy-header" class="btn-primary">
-          <span id="header-copy-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          </span>
+        <!-- コピーボタン（PC） -->
+        <button 
+          onclick="copyToClipboard()"
+          id="header-copy-btn"
+          class="hidden lg:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-all shadow-sm font-medium text-sm active:scale-95"
+        >
+          <i data-lucide="copy" class="w-4 h-4"></i>
           <span id="header-copy-btn-text">テキストをコピー</span>
         </button>
       </div>
@@ -478,96 +105,121 @@
   </header>
 
   <!-- メインコンテンツ -->
-  <main class="main-content container">
-    <div class="layout-grid">
+  <main class="max-w-6xl mx-auto px-4 py-6 lg:py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
       
       <!-- 左側：入力フォーム -->
-      <div class="col-left">
+      <div class="lg:w-7/12 xl:w-2/3 space-y-6">
         
         <!-- 名前 -->
-        <div class="card">
-          <input type="text" id="char-name" class="input-name" placeholder="キャラクターの名前を入力" />
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+          <input 
+            type="text" 
+            id="char-name" 
+            oninput="updatePreview()"
+            class="w-full text-2xl lg:text-3xl font-bold bg-transparent border-b-2 border-slate-200 focus:border-indigo-500 outline-none pb-2 placeholder-slate-300 transition-colors"
+            placeholder="キャラクターの名前を入力"
+          />
         </div>
 
         <!-- 過去、設定 -->
-        <div class="card">
-          <h2 class="card-title"><span class="marker blue"></span>〇過去、設定</h2>
-          <div id="past-settings-list"></div>
-          <button data-action="add-item" data-target="past-settings-list" data-placeholder="過去の出来事や基本設定..." class="btn-add">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>項目を追加
+        <div class="bg-white shadow-sm rounded-xl p-5 border border-slate-200">
+          <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+            <span class="w-1.5 h-5 bg-indigo-500 rounded-full"></span>
+            〇過去、設定
+          </h2>
+          <div id="past-settings-list" class="space-y-3"></div>
+          <button onclick="addListItem('past-settings-list', '過去の出来事や基本設定...')" class="mt-4 flex items-center justify-center w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors text-sm font-medium">
+            <i data-lucide="plus" class="w-4 h-4 mr-1"></i> 項目を追加
           </button>
         </div>
 
         <!-- モットー（信念） -->
-        <div class="card">
-          <h2 class="card-title"><span class="marker blue"></span>〇モットー（信念）</h2>
-          <div id="mottos-list"></div>
-          <button data-action="add-item" data-target="mottos-list" data-placeholder="譲れない信念や座右の銘など..." class="btn-add">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>項目を追加
+        <div class="bg-white shadow-sm rounded-xl p-5 border border-slate-200">
+          <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+            <span class="w-1.5 h-5 bg-indigo-500 rounded-full"></span>
+            〇モットー（信念）
+          </h2>
+          <div id="mottos-list" class="space-y-3"></div>
+          <button onclick="addListItem('mottos-list', '譲れない信念や座右の銘など...')" class="mt-4 flex items-center justify-center w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors text-sm font-medium">
+            <i data-lucide="plus" class="w-4 h-4 mr-1"></i> 項目を追加
           </button>
         </div>
 
         <!-- 性格、特徴 -->
-        <div class="card">
-          <h2 class="card-title"><span class="marker blue"></span>〇性格、特徴</h2>
-          <div id="traits-list"></div>
-          <button data-action="add-item" data-target="traits-list" data-placeholder="性格や身体的な特徴など..." class="btn-add">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>項目を追加
+        <div class="bg-white shadow-sm rounded-xl p-5 border border-slate-200">
+          <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+            <span class="w-1.5 h-5 bg-indigo-500 rounded-full"></span>
+            〇性格、特徴
+          </h2>
+          <div id="traits-list" class="space-y-3"></div>
+          <button onclick="addListItem('traits-list', '性格や身体的な特徴など...')" class="mt-4 flex items-center justify-center w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors text-sm font-medium">
+            <i data-lucide="plus" class="w-4 h-4 mr-1"></i> 項目を追加
           </button>
         </div>
 
         <!-- 自分用メモ -->
-        <div class="card">
-          <h2 class="card-title"><span class="marker teal"></span>〇自分用メモ</h2>
+        <div class="bg-white shadow-sm rounded-xl p-5 border border-slate-200">
+          <h2 class="text-lg font-bold mb-5 text-slate-800 flex items-center gap-2">
+            <span class="w-1.5 h-5 bg-teal-500 rounded-full"></span>
+            〇自分用メモ
+          </h2>
           
           <!-- 共鳴感情 -->
-          <div class="memo-section">
-            <span class="memo-label">【共鳴感情】</span>
-            <div class="grid-3">
+          <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <h3 class="font-semibold text-slate-700 mb-3 text-sm">【共鳴感情】</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label class="input-sm-label">表</label>
-                <input type="text" id="resonance-front" class="input-sm" placeholder="〇〇" />
+                <label class="block text-xs font-medium text-slate-500 mb-1">表</label>
+                <input type="text" id="resonance-front" oninput="updatePreview()" class="w-full border border-slate-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-teal-400 outline-none" placeholder="〇〇" />
               </div>
               <div>
-                <label class="input-sm-label">裏</label>
-                <input type="text" id="resonance-back" class="input-sm" placeholder="〇〇" />
+                <label class="block text-xs font-medium text-slate-500 mb-1">裏</label>
+                <input type="text" id="resonance-back" oninput="updatePreview()" class="w-full border border-slate-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-teal-400 outline-none" placeholder="〇〇" />
               </div>
               <div>
-                <label class="input-sm-label">ルーツ</label>
-                <input type="text" id="resonance-roots" class="input-sm" placeholder="〇〇" />
+                <label class="block text-xs font-medium text-slate-500 mb-1">ルーツ</label>
+                <input type="text" id="resonance-roots" oninput="updatePreview()" class="w-full border border-slate-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-teal-400 outline-none" placeholder="〇〇" />
               </div>
             </div>
           </div>
 
           <!-- 名前の由来 -->
-          <div class="memo-section">
-            <span class="memo-label">・名前の由来</span>
-            <textarea id="name-origin" class="textarea-base teal min-h-80" placeholder="名前の由来や込めた意味など..."></textarea>
+          <div class="mb-6">
+            <h3 class="font-semibold text-slate-700 mb-2 flex items-center text-sm">
+              <span class="mr-1">・</span>名前の由来
+            </h3>
+            <textarea id="name-origin" oninput="updatePreview()" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-400 outline-none min-h-[80px] bg-slate-50 resize-y" placeholder="名前の由来や込めた意味など..."></textarea>
           </div>
 
           <!-- 任意の追加メモ -->
-          <div class="memo-section" style="margin-bottom: 0;">
-            <span class="memo-label">・その他のメモ</span>
-            <div id="memos-list"></div>
-            <button data-action="add-item" data-target="memos-list" data-placeholder="自由なメモ..." data-teal="true" class="btn-add teal" style="border-color: transparent;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>メモ項目を追加
+          <div>
+            <h3 class="font-semibold text-slate-700 mb-3 flex items-center text-sm">
+              <span class="mr-1">・</span>その他のメモ
+            </h3>
+            <div id="memos-list" class="space-y-3"></div>
+            <button onclick="addListItem('memos-list', '自由なメモ...')" class="text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-md text-sm font-medium flex items-center mt-2 p-2 transition-colors w-full justify-center border border-transparent border-dashed hover:border-teal-300">
+              <i data-lucide="plus" class="w-4 h-4 mr-1"></i> メモ項目を追加
             </button>
           </div>
         </div>
 
         <!-- セリフ -->
-        <div class="card">
-          <h2 class="card-title"><span class="marker blue"></span>〇セリフ</h2>
-          <div id="quotes-list"></div>
-          <button data-action="add-item" data-target="quotes-list" data-placeholder="印象的なセリフ..." data-quote="true" class="btn-add">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>項目を追加
+        <div class="bg-white shadow-sm rounded-xl p-5 border border-slate-200">
+          <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+            <span class="w-1.5 h-5 bg-indigo-500 rounded-full"></span>
+            〇セリフ
+          </h2>
+          <div id="quotes-list" class="space-y-3"></div>
+          <button onclick="addListItem('quotes-list', '印象的なセリフ...', true)" class="mt-4 flex items-center justify-center w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 hover:text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors text-sm font-medium">
+            <i data-lucide="plus" class="w-4 h-4 mr-1"></i> 項目を追加
           </button>
         </div>
 
         <!-- スマホ用：画面最下部の一括クリアボタン -->
-        <div class="mobile-only" style="padding-bottom: 16px;">
-          <button id="btn-clear-mobile" class="mobile-clear-btn flex">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        <div class="lg:hidden flex justify-center pb-4">
+          <button onclick="showClearModal()" class="flex items-center gap-1.5 text-slate-400 hover:text-red-500 px-4 py-3 rounded-xl border-2 border-slate-200 bg-white shadow-sm font-bold text-sm w-full justify-center transition-colors active:scale-95">
+            <i data-lucide="trash" class="w-4 h-4"></i>
             <span>すべての入力をクリア</span>
           </button>
         </div>
@@ -575,21 +227,21 @@
       </div>
 
       <!-- 右側：プレビュー画面 -->
-      <div class="col-right">
-        <div class="preview-container custom-scrollbar">
-          <div class="preview-header">
-            <span class="preview-title">完成プレビュー</span>
-            <div class="preview-dots">
-              <div class="dot dot-red"></div>
-              <div class="dot dot-yellow"></div>
-              <div class="dot dot-green"></div>
+      <div class="lg:w-5/12 xl:w-1/3">
+        <div class="lg:sticky lg:top-24 bg-slate-800 text-slate-100 rounded-xl shadow-xl overflow-hidden border border-slate-700 flex flex-col max-h-[calc(100vh-120px)]">
+          <div class="bg-slate-900 px-5 py-4 border-b border-slate-700 flex justify-between items-center shrink-0">
+            <h2 class="text-sm font-bold text-slate-300 uppercase tracking-wider">完成プレビュー</h2>
+            <div class="flex space-x-1.5">
+              <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
             </div>
           </div>
-          <div class="preview-content custom-scrollbar">
-            <pre id="preview-text" class="preview-text"></pre>
-            <div id="preview-empty" class="preview-empty">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-              <p>項目を入力するとここにテキストが表示されます</p>
+          <div class="p-5 overflow-y-auto grow custom-scrollbar min-h-[250px] bg-slate-900/40">
+            <pre id="preview-text" class="whitespace-pre-wrap font-mono text-sm leading-relaxed text-slate-200 hidden"></pre>
+            <div id="preview-empty" class="h-full flex flex-col items-center justify-center text-slate-500 opacity-60 space-y-3 py-12">
+              <i data-lucide="user-round" class="w-12 h-12"></i>
+              <p class="text-sm text-center">項目を入力すると<br>ここにテキストが表示されます</p>
             </div>
           </div>
         </div>
@@ -599,289 +251,422 @@
   </main>
 
   <!-- モバイル用コピーボタン -->
-  <button id="btn-copy-mobile" class="mobile-only fab" aria-label="テキストをコピー">
-    <span id="mobile-copy-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-    </span>
+  <button 
+    onclick="copyToClipboard()"
+    id="mobile-copy-btn"
+    class="lg:hidden fixed bottom-12 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg shadow-indigo-600/30 flex items-center justify-center z-50 hover:bg-indigo-700 active:scale-95 transition-all"
+    aria-label="テキストをコピー"
+  >
+    <i data-lucide="copy" class="w-6 h-6" id="mobile-copy-icon"></i>
   </button>
 
   <script>
-    // ==========================================
-    // JSの実行を確実にするためのイベント駆動設計
-    // ==========================================
-    
-    // アイコンのSVGデータ定数
-    const SVG_TRASH = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`;
-    const SVG_COPY = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
-    const SVG_COPY_LG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`;
-    const SVG_CHECK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-    const SVG_CHECK_LG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-
-    // DOMの読み込みが完了してから処理を開始
-    document.addEventListener('DOMContentLoaded', () => {
-
-      // --- UI制御（トースト＆モーダル） ---
-      function showToast(message) {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toast-message');
-        toastMessage.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    // --- 汎用トースト通知 ---
+    function showToast(message, type = 'error') {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      const icon = document.getElementById('toast-icon');
+      
+      // スタイルのリセットと設定
+      toast.className = "fixed top-4 left-1/2 transform -translate-x-1/2 z-[200] transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none flex items-center gap-2 px-5 py-3 rounded-xl shadow-xl text-sm font-medium whitespace-nowrap";
+      
+      if (type === 'success') {
+        toast.classList.add('bg-teal-600', 'text-white');
+        icon.setAttribute('data-lucide', 'check-circle');
+      } else if (type === 'info') {
+        toast.classList.add('bg-indigo-600', 'text-white');
+        icon.setAttribute('data-lucide', 'info');
+      } else {
+        toast.classList.add('bg-red-600', 'text-white');
+        icon.setAttribute('data-lucide', 'alert-circle');
       }
+      
+      lucide.createIcons();
+      toastMessage.textContent = message;
+      
+      // 表示アニメーション
+      toast.classList.remove('opacity-0', '-translate-y-4');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      
+      // 非表示アニメーション
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-4');
+      }, 3000);
+    }
 
-      function showClearModal() {
-        document.getElementById('confirm-modal').classList.add('show');
+    // --- 一括クリアモーダル制御 ---
+    function showClearModal() {
+      const modal = document.getElementById('confirm-modal');
+      const box = document.getElementById('confirm-modal-box');
+      modal.classList.remove('modal-hidden');
+      modal.classList.add('modal-active');
+      setTimeout(() => { box.classList.remove('scale-95'); box.classList.add('scale-100'); }, 10);
+    }
+
+    function hideClearModal() {
+      const modal = document.getElementById('confirm-modal');
+      const box = document.getElementById('confirm-modal-box');
+      box.classList.remove('scale-100');
+      box.classList.add('scale-95');
+      setTimeout(() => { modal.classList.remove('modal-active'); modal.classList.add('modal-hidden'); }, 200);
+    }
+
+    // --- ローカルストレージ自動保存・復元 ---
+    const STORAGE_KEY = 'charSheetData';
+
+    function getListValues(containerId) {
+      const container = document.getElementById(containerId);
+      const textareas = container.querySelectorAll('textarea');
+      return Array.from(textareas).map(ta => ta.value);
+    }
+
+    function saveData() {
+      const data = {
+        name: document.getElementById('char-name').value,
+        pastSettings: getListValues('past-settings-list'),
+        mottos: getListValues('mottos-list'),
+        traits: getListValues('traits-list'),
+        resonance: {
+          front: document.getElementById('resonance-front').value,
+          back: document.getElementById('resonance-back').value,
+          roots: document.getElementById('resonance-roots').value
+        },
+        nameOrigin: document.getElementById('name-origin').value,
+        memos: getListValues('memos-list'),
+        quotes: getListValues('quotes-list')
+      };
+      
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      
+      // 保存インジケーターをチラッと表示
+      const indicator = document.getElementById('save-indicator');
+      indicator.classList.remove('hidden');
+      indicator.classList.add('flex');
+      clearTimeout(window.saveIndicatorTimer);
+      window.saveIndicatorTimer = setTimeout(() => {
+        indicator.classList.add('hidden');
+        indicator.classList.remove('flex');
+      }, 2000);
+    }
+
+    function restoreList(containerId, values, placeholder, isQuote = false) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = ''; // リセット
+      if (values && values.length > 0) {
+        values.forEach(val => addListItem(containerId, placeholder, isQuote, val));
+      } else {
+        addListItem(containerId, placeholder, isQuote);
       }
+    }
 
-      function hideClearModal() {
-        document.getElementById('confirm-modal').classList.remove('show');
-      }
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          document.getElementById('char-name').value = data.name || '';
+          document.getElementById('resonance-front').value = data.resonance?.front || '';
+          document.getElementById('resonance-back').value = data.resonance?.back || '';
+          document.getElementById('resonance-roots').value = data.resonance?.roots || '';
+          document.getElementById('name-origin').value = data.nameOrigin || '';
 
-      // --- プレーンテキスト構築 ---
-      function generateText() {
-        let output = [];
-        const name = document.getElementById('char-name').value.trim();
-        if (name) { output.push(name); output.push(''); }
-
-        const appendListSection = (title, containerId, prefix = '・', isQuote = false) => {
-          const container = document.getElementById(containerId);
-          const textareas = container.querySelectorAll('textarea');
-          const validItems = [];
-          textareas.forEach(ta => {
-            const val = ta.value.trim();
-            if (val) validItems.push(val);
-          });
-
-          if (validItems.length > 0) {
-            output.push(`〇${title}`);
-            validItems.forEach(item => {
-              if (isQuote) { output.push(`「${item}」`); } 
-              else { output.push(`${prefix}${item}`); }
-            });
-            output.push('');
-          }
-        };
-
-        appendListSection('過去、設定', 'past-settings-list');
-        appendListSection('モットー（信念）', 'mottos-list');
-        appendListSection('性格、特徴', 'traits-list');
-
-        let hasMemoContent = false;
-        let memoSection = [`〇自分用メモ`];
-
-        const front = document.getElementById('resonance-front').value.trim();
-        const back = document.getElementById('resonance-back').value.trim();
-        const roots = document.getElementById('resonance-roots').value.trim();
-
-        if (front || back || roots) {
-          memoSection.push(`【共鳴感情】`);
-          memoSection.push(`表:${front || '〇〇'}／裏:${back || '〇〇'}／ルーツ:${roots || '〇〇'}`);
-          memoSection.push('');
-          hasMemoContent = true;
+          restoreList('past-settings-list', data.pastSettings, '過去の出来事や基本設定...');
+          restoreList('mottos-list', data.mottos, '譲れない信念や座右の銘など...');
+          restoreList('traits-list', data.traits, '性格や身体的な特徴など...');
+          restoreList('memos-list', data.memos, '自由なメモ...');
+          restoreList('quotes-list', data.quotes, '印象的なセリフ...', true);
+          return true;
+        } catch (e) {
+          console.error('保存データの読み込みに失敗しました', e);
         }
+      }
+      return false;
+    }
 
-        const nameOrigin = document.getElementById('name-origin').value.trim();
-        if (nameOrigin) {
-          memoSection.push(`・名前の由来`);
-          memoSection.push(nameOrigin);
-          memoSection.push('');
-          hasMemoContent = true;
-        }
+    // --- ロジック ---
 
-        const memoTextareas = document.getElementById('memos-list').querySelectorAll('textarea');
-        const validMemos = [];
-        memoTextareas.forEach(ta => {
-          const val = ta.value.trim();
-          if (val) validMemos.push(val);
-        });
+    // プレーンテキスト構築関数
+    function generateText() {
+      let output = [];
+      const name = document.getElementById('char-name').value.trim();
 
-        if (validMemos.length > 0) {
-          validMemos.forEach(m => memoSection.push(`・${m}`));
-          memoSection.push('');
-          hasMemoContent = true;
-        }
-
-        if (hasMemoContent) { output.push(...memoSection); }
-        appendListSection('セリフ', 'quotes-list', '', true);
-
-        return output.join('\n').trim();
+      if (name) {
+        output.push(name);
+        output.push('');
       }
 
-      // --- プレビューの更新 ---
-      function updatePreview() {
-        const text = generateText();
-        const previewText = document.getElementById('preview-text');
-        const previewEmpty = document.getElementById('preview-empty');
-
-        if (text) {
-          previewText.textContent = text;
-          previewText.style.display = 'block';
-          previewEmpty.style.display = 'none';
-        } else {
-          previewText.style.display = 'none';
-          previewEmpty.style.display = 'flex';
-        }
-      }
-
-      // --- リスト項目の動的追加 ---
-      function addListItem(containerId, placeholder, isQuote = false, isTeal = false) {
+      const appendListSection = (title, containerId, prefix = '・', isQuote = false) => {
         const container = document.getElementById(containerId);
-        const div = document.createElement('div');
-        div.className = 'list-item';
+        const textareas = container.querySelectorAll('textarea');
+        const validItems = [];
+        textareas.forEach(ta => {
+          const val = ta.value.trim();
+          if (val) validItems.push(val);
+        });
 
-        const bullet = isQuote ? '<span class="list-quote">「</span>' : '<span class="list-bullet">・</span>';
-        const closingQuote = isQuote ? '<span class="list-quote" style="margin-left: 4px;">」</span>' : '';
-        const taClass = isTeal ? 'textarea-base teal min-h-60' : 'textarea-base min-h-60';
+        if (validItems.length > 0) {
+          output.push(`〇${title}`);
+          validItems.forEach(item => {
+            if (isQuote) output.push(`「${item}」`);
+            else output.push(`${prefix}${item}`);
+          });
+          output.push('');
+        }
+      };
 
-        div.innerHTML = `
-          ${bullet}
-          <textarea class="${taClass}" placeholder="${placeholder}"></textarea>
-          ${closingQuote}
-          <button type="button" class="btn-delete" title="削除" data-action="remove-item">
-            ${SVG_TRASH}
-          </button>
-        `;
-        container.appendChild(div);
+      appendListSection('過去、設定', 'past-settings-list');
+      appendListSection('モットー（信念）', 'mottos-list');
+      appendListSection('性格、特徴', 'traits-list');
+
+      let hasMemoContent = false;
+      let memoSection = [`〇自分用メモ`];
+
+      const front = document.getElementById('resonance-front').value.trim();
+      const back = document.getElementById('resonance-back').value.trim();
+      const roots = document.getElementById('resonance-roots').value.trim();
+
+      if (front || back || roots) {
+        memoSection.push(`【共鳴感情】`);
+        memoSection.push(`表:${front || '〇〇'}／裏:${back || '〇〇'}／ルーツ:${roots || '〇〇'}`);
+        memoSection.push('');
+        hasMemoContent = true;
       }
 
-      // --- クリア実行 ---
-      function executeClearAll() {
-        hideClearModal();
-        document.getElementById('char-name').value = '';
-        document.getElementById('resonance-front').value = '';
-        document.getElementById('resonance-back').value = '';
-        document.getElementById('resonance-roots').value = '';
-        document.getElementById('name-origin').value = '';
+      const nameOrigin = document.getElementById('name-origin').value.trim();
+      if (nameOrigin) {
+        memoSection.push(`・名前の由来`);
+        memoSection.push(nameOrigin);
+        memoSection.push('');
+        hasMemoContent = true;
+      }
 
-        const lists = [
-          { id: 'past-settings-list', placeholder: '過去の出来事や基本設定...' },
-          { id: 'mottos-list', placeholder: '譲れない信念や座右の銘など...' },
-          { id: 'traits-list', placeholder: '性格や身体的な特徴など...' },
-          { id: 'memos-list', placeholder: '自由なメモ...', isTeal: true },
-          { id: 'quotes-list', placeholder: '印象的なセリフ...', isQuote: true }
-        ];
+      const memoTextareas = document.getElementById('memos-list').querySelectorAll('textarea');
+      const validMemos = [];
+      memoTextareas.forEach(ta => {
+        const val = ta.value.trim();
+        if (val) validMemos.push(val);
+      });
 
-        lists.forEach(list => {
-          const container = document.getElementById(list.id);
-          container.innerHTML = '';
-          addListItem(list.id, list.placeholder, list.isQuote, list.isTeal);
-        });
+      if (validMemos.length > 0) {
+        validMemos.forEach(m => memoSection.push(`・${m}`));
+        memoSection.push('');
+        hasMemoContent = true;
+      }
+
+      if (hasMemoContent) {
+        output.push(...memoSection);
+      }
+
+      appendListSection('セリフ', 'quotes-list', '', true);
+
+      return output.join('\n').trim();
+    }
+
+    // プレビューと保存の更新
+    function updatePreview() {
+      const text = generateText();
+      const previewText = document.getElementById('preview-text');
+      const previewEmpty = document.getElementById('preview-empty');
+
+      if (text) {
+        previewText.textContent = text;
+        previewText.classList.remove('hidden');
+        previewEmpty.classList.add('hidden');
+      } else {
+        previewText.classList.add('hidden');
+        previewEmpty.classList.remove('hidden');
+      }
+
+      saveData(); // 変更があるたびに自動保存
+    }
+
+    // リスト項目の動的追加（値の復元対応、上下ボタン追加）
+    function addListItem(containerId, placeholder, isQuote = false, initialValue = '') {
+      const container = document.getElementById(containerId);
+      const div = document.createElement('div');
+      div.className = 'flex items-start mb-3 group';
+
+      const bullet = isQuote 
+        ? '<span class="mt-2 mr-1 text-slate-400 font-bold select-none shrink-0">「</span>' 
+        : '<span class="mt-2 mr-2 text-slate-400 select-none shrink-0">・</span>';
+
+      const closingQuote = isQuote 
+        ? '<span class="mt-2 ml-1 text-slate-400 font-bold select-none shrink-0">」</span>' 
+        : '';
+
+      // textareaの値をエスケープ（XSS対策）して埋め込む
+      const safeValue = initialValue.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+      div.innerHTML = `
+        ${bullet}
+        <textarea
+          oninput="updatePreview()"
+          class="flex-1 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none resize-y min-h-[60px] bg-slate-50"
+          placeholder="${placeholder}"
+        >${safeValue}</textarea>
+        ${closingQuote}
+        <div class="flex flex-col ml-2 gap-1 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+          <button onclick="moveUpListItem(this)" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded bg-white border border-slate-200 shadow-sm" title="上へ移動">
+            <i data-lucide="chevron-up" class="w-[14px] h-[14px]"></i>
+          </button>
+          <button onclick="moveDownListItem(this)" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded bg-white border border-slate-200 shadow-sm" title="下へ移動">
+            <i data-lucide="chevron-down" class="w-[14px] h-[14px]"></i>
+          </button>
+          <button onclick="removeListItem(this)" class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded bg-white border border-slate-200 shadow-sm" title="削除">
+            <i data-lucide="trash-2" class="w-[14px] h-[14px]"></i>
+          </button>
+        </div>
+      `;
+
+      container.appendChild(div);
+      lucide.createIcons();
+      if(!initialValue) updatePreview(); // 新規追加時は保存トリガー
+    }
+
+    // --- 項目の操作（削除・上へ・下へ） ---
+    function removeListItem(buttonElement) {
+      const row = buttonElement.closest('.flex.items-start');
+      row.remove();
+      updatePreview();
+    }
+
+    function moveUpListItem(buttonElement) {
+      const row = buttonElement.closest('.flex.items-start');
+      const prev = row.previousElementSibling;
+      if (prev) {
+        row.parentNode.insertBefore(row, prev);
         updatePreview();
       }
+    }
 
-      // --- コピー処理 ---
-      function copyToClipboard() {
-        const text = generateText();
-        if (!text) {
-          showToast('コピーするテキストがありません。');
-          return;
-        }
-
-        const handleSuccess = () => {
-          const headerBtn = document.getElementById('btn-copy-header');
-          const headerText = document.getElementById('header-copy-btn-text');
-          const headerIcon = document.getElementById('header-copy-icon');
-          const mobileBtn = document.getElementById('btn-copy-mobile');
-          const mobileIcon = document.getElementById('mobile-copy-icon');
-          
-          headerBtn.classList.add('success');
-          headerText.textContent = 'コピーしました！';
-          headerIcon.innerHTML = SVG_CHECK;
-          
-          mobileBtn.classList.add('success');
-          mobileIcon.innerHTML = SVG_CHECK_LG;
-
-          setTimeout(() => {
-            headerBtn.classList.remove('success');
-            headerText.textContent = 'テキストをコピー';
-            headerIcon.innerHTML = SVG_COPY;
-            
-            mobileBtn.classList.remove('success');
-            mobileIcon.innerHTML = SVG_COPY_LG;
-          }, 2000);
-        };
-
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(text).then(handleSuccess).catch(err => {
-            fallbackCopy(text, handleSuccess);
-          });
-        } else {
-          fallbackCopy(text, handleSuccess);
-        }
+    function moveDownListItem(buttonElement) {
+      const row = buttonElement.closest('.flex.items-start');
+      const next = row.nextElementSibling;
+      if (next) {
+        row.parentNode.insertBefore(next, row); // nextをrowの前に移動 ＝ rowをnextの後ろに移動
+        updatePreview();
       }
+    }
 
-      function fallbackCopy(text, callback) {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.opacity = "0";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        try {
-          const successful = document.execCommand('copy');
-          if (successful) callback();
-        } catch (err) {
-          console.error('Fallback copy failed');
-        }
-        document.body.removeChild(textArea);
-      }
+    // --- 一括クリア実行処理 ---
+    function executeClearAll() {
+      hideClearModal();
 
-      // ==========================================
-      // イベントリスナーの登録（ファイルアプリ対策）
-      // ==========================================
+      // ローカルストレージをクリア
+      localStorage.removeItem(STORAGE_KEY);
 
-      // 1. 入力フィールドの変更監視（イベント委譲）
-      document.addEventListener('input', (e) => {
-        if (e.target.tagName.toLowerCase() === 'textarea' || e.target.tagName.toLowerCase() === 'input') {
-          updatePreview();
-        }
+      // 値を空にする
+      document.getElementById('char-name').value = '';
+      document.getElementById('resonance-front').value = '';
+      document.getElementById('resonance-back').value = '';
+      document.getElementById('resonance-roots').value = '';
+      document.getElementById('name-origin').value = '';
+
+      // 各リストを空枠1つにリセット
+      const lists = [
+        { id: 'past-settings-list', placeholder: '過去の出来事や基本設定...' },
+        { id: 'mottos-list', placeholder: '譲れない信念や座右の銘など...' },
+        { id: 'traits-list', placeholder: '性格や身体的な特徴など...' },
+        { id: 'memos-list', placeholder: '自由なメモ...' },
+        { id: 'quotes-list', placeholder: '印象的なセリフ...', isQuote: true }
+      ];
+
+      lists.forEach(list => {
+        const container = document.getElementById(list.id);
+        container.innerHTML = ''; 
+        addListItem(list.id, list.placeholder, list.isQuote); 
       });
 
-      // 2. クリックイベントの監視（イベント委譲）
-      document.addEventListener('click', (e) => {
-        // 「項目を追加」ボタン
-        const addBtn = e.target.closest('[data-action="add-item"]');
-        if (addBtn) {
-          const target = addBtn.getAttribute('data-target');
-          const placeholder = addBtn.getAttribute('data-placeholder');
-          const isQuote = addBtn.getAttribute('data-quote') === 'true';
-          const isTeal = addBtn.getAttribute('data-teal') === 'true';
-          addListItem(target, placeholder, isQuote, isTeal);
-          return;
-        }
-
-        // 「削除」ボタン
-        const removeBtn = e.target.closest('[data-action="remove-item"]');
-        if (removeBtn) {
-          const row = removeBtn.closest('.list-item');
-          if (row) {
-            row.remove();
-            updatePreview();
-          }
-          return;
-        }
-      });
-
-      // 3. 固定ボタンへのイベント割り当て
-      document.getElementById('btn-clear-header').addEventListener('click', showClearModal);
-      document.getElementById('btn-clear-mobile').addEventListener('click', showClearModal);
-      
-      document.getElementById('btn-copy-header').addEventListener('click', copyToClipboard);
-      document.getElementById('btn-copy-mobile').addEventListener('click', copyToClipboard);
-
-      document.getElementById('btn-modal-cancel').addEventListener('click', hideClearModal);
-      document.getElementById('btn-modal-confirm').addEventListener('click', executeClearAll);
-
-
-      // --- 初期化処理 ---
-      addListItem('past-settings-list', '過去の出来事や基本設定...');
-      addListItem('mottos-list', '譲れない信念や座右の銘など...');
-      addListItem('traits-list', '性格や身体的な特徴など...');
-      addListItem('memos-list', '自由なメモ...', false, true);
-      addListItem('quotes-list', '印象的なセリフ...', true);
       updatePreview();
-    });
+      showToast('すべてのデータをクリアしました', 'success');
+    }
+
+    // --- コピー処理 ---
+    function copyToClipboard() {
+      const text = generateText();
+      if (!text) {
+        showToast('コピーするテキストがありません。項目を入力してください。', 'error');
+        return;
+      }
+
+      const handleVisualFeedback = () => {
+        const headerBtn = document.getElementById('header-copy-btn');
+        const headerText = document.getElementById('header-copy-btn-text');
+        
+        headerBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        headerBtn.classList.add('bg-green-600');
+        headerText.textContent = 'コピーしました！';
+        
+        const mobileBtn = document.getElementById('mobile-copy-btn');
+        mobileBtn.classList.remove('bg-indigo-600');
+        mobileBtn.classList.add('bg-green-600');
+        
+        headerBtn.querySelector('i').setAttribute('data-lucide', 'check');
+        document.getElementById('mobile-copy-icon').setAttribute('data-lucide', 'check');
+        lucide.createIcons();
+
+        showToast('クリップボードにコピーしました！', 'success');
+
+        setTimeout(() => {
+          headerBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+          headerBtn.classList.remove('bg-green-600');
+          headerText.textContent = 'テキストをコピー';
+          
+          mobileBtn.classList.add('bg-indigo-600');
+          mobileBtn.classList.remove('bg-green-600');
+          
+          headerBtn.querySelector('i').setAttribute('data-lucide', 'copy');
+          document.getElementById('mobile-copy-icon').setAttribute('data-lucide', 'copy');
+          lucide.createIcons();
+        }, 2000);
+      };
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(handleVisualFeedback).catch(err => {
+          fallbackCopy(text, handleVisualFeedback);
+        });
+      } else {
+        fallbackCopy(text, handleVisualFeedback);
+      }
+    }
+
+    function fallbackCopy(text, callback) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed"; 
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) callback();
+      } catch (err) {
+        showToast('コピーに失敗しました', 'error');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // --- 初期起動セットアップ ---
+    window.onload = function() {
+      lucide.createIcons();
+      
+      const hasData = loadData();
+      
+      if (!hasData) {
+        // 保存データがない場合は空枠を作成
+        addListItem('past-settings-list', '過去の出来事や基本設定...');
+        addListItem('mottos-list', '譲れない信念や座右の銘など...');
+        addListItem('traits-list', '性格や身体的な特徴など...');
+        addListItem('memos-list', '自由なメモ...');
+        addListItem('quotes-list', '印象的なセリフ...', true);
+      } else {
+        // データ復元成功時
+        showToast('前回の続きから再開しました', 'info');
+      }
+      
+      updatePreview();
+    }
   </script>
 </body>
 </html>
